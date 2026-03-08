@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:transferdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+  main:
+    web-application-type: none
+
+app:
+  security:
+    ws-api-key: test-key
