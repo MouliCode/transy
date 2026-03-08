@@ -1,0 +1,109 @@
+version: '3.9'
+
+services:
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      GATEWAY_PORT: 8080
+      WS_API_KEY: ${WS_API_KEY:-dev-ws-key}
+    depends_on:
+      - discovery-server
+      - config-server
+      - device-service
+      - signaling-service
+      - transfer-service
+
+  signaling-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: signaling-service
+    ports:
+      - "8082:8082"
+    environment:
+      SIGNALING_PORT: 8082
+      WS_API_KEY: ${WS_API_KEY:-dev-ws-key}
+
+  device-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: device-service
+    ports:
+      - "8083:8083"
+    environment:
+      DEVICE_PORT: 8083
+      WS_API_KEY: ${WS_API_KEY:-dev-ws-key}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
+
+  transfer-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: transfer-service
+    ports:
+      - "8085:8085"
+    environment:
+      TRANSFER_PORT: 8085
+      WS_API_KEY: ${WS_API_KEY:-dev-ws-key}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: transy
+      POSTGRES_USER: transy
+      POSTGRES_PASSWORD: transy
+    depends_on:
+      - postgres
+
+  config-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: config-server
+    ports:
+      - "8888:8888"
+    environment:
+      CONFIG_PORT: 8888
+      WS_API_KEY: ${WS_API_KEY:-dev-ws-key}
+
+  discovery-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: discovery-server
+    ports:
+      - "8761:8761"
+    environment:
+      DISCOVERY_PORT: 8761
+      WS_API_KEY: ${WS_API_KEY:-dev-ws-key}
+
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: transy
+      POSTGRES_USER: transy
+      POSTGRES_PASSWORD: transy
+    ports:
+      - "5432:5432"
+
+networks:
+  default:
+    name: transy-network

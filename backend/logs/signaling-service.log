@@ -1,0 +1,19 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.3)
+
+2026-03-08T22:47:38.214+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Starting SignalingServiceApplication using Java 25.0.2 with PID 25077 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service)
+2026-03-08T22:47:38.215+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-03-08T22:47:38.529+05:30  INFO 25077 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8082 (http)
+2026-03-08T22:47:38.534+05:30  INFO 25077 --- [signaling-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-08T22:47:38.534+05:30  INFO 25077 --- [signaling-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-03-08T22:47:38.550+05:30  INFO 25077 --- [signaling-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 318 ms
+2026-03-08T22:47:38.764+05:30  INFO 25077 --- [signaling-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-03-08T22:47:38.786+05:30  INFO 25077 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8082 (http) with context path '/'
+2026-03-08T22:47:38.790+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Started SignalingServiceApplication in 0.695 seconds (process running for 0.812)
