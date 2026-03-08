@@ -11,7 +11,7 @@ class DeviceSessionServiceTest {
 
     @Test
     void bindAndUnbindBySessionIdWork() {
-        DeviceSessionService service = new DeviceSessionService();
+        DeviceSessionService service = new DeviceSessionService(null);
         WebSocketSession session = mock(WebSocketSession.class);
         when(session.getId()).thenReturn("ws-1");
 

@@ -3,16 +3,22 @@ package com.transfer.transfer.service;
 import com.transfer.transfer.model.TransferSession;
 import com.transfer.transfer.model.TransferStatus;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class TransferSessionServiceTest {
+
+    @Autowired
+    private TransferSessionService service;
 
     @Test
     void createProgressCompleteAndFailAreHandled() {
-        TransferSessionService service = new TransferSessionService();
-
         TransferSession created = service.create("d1", "d2", "movie.mp4", 1024);
         assertNotNull(created.transferId());
         assertEquals(TransferStatus.PENDING, created.status());

@@ -33,3 +33,7 @@ build/
 .vscode/
 
 *.log
+
+/logs
+/.pids
+*/.data

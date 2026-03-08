@@ -12,7 +12,7 @@ class SessionServiceTest {
 
     @Test
     void registerAndRemoveBySessionIdWorks() {
-        SessionService service = new SessionService();
+        SessionService service = new SessionService(null);
         WebSocketSession session = mock(WebSocketSession.class);
         when(session.getId()).thenReturn("s1");
 
