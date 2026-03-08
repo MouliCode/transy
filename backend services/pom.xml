@@ -8,8 +8,9 @@
 		<version>4.0.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	<packaging>pom</packaging>
 	<groupId>com.transfer</groupId>
-	<artifactId>backend</artifactId>
+	<artifactId>backendservices</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend</name>
 	<description>files transfer application between different OS</description>
