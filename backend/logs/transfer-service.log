@@ -8,11 +8,12 @@
 
  :: Spring Boot ::                (v4.0.3)
 
-2026-03-08T22:33:42.124+05:30  INFO 22916 --- [transfer-service] [           main] c.t.transfer.TransferServiceApplication  : Starting TransferServiceApplication using Java 25.0.2 with PID 22916 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/transfer-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/transfer-service)
-2026-03-08T22:33:42.125+05:30  INFO 22916 --- [transfer-service] [           main] c.t.transfer.TransferServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-03-08T22:33:42.350+05:30  INFO 22916 --- [transfer-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8085 (http)
-2026-03-08T22:33:42.355+05:30  INFO 22916 --- [transfer-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-03-08T22:33:42.355+05:30  INFO 22916 --- [transfer-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
-2026-03-08T22:33:42.367+05:30  INFO 22916 --- [transfer-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 225 ms
-2026-03-08T22:33:42.502+05:30  INFO 22916 --- [transfer-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8085 (http) with context path '/'
-2026-03-08T22:33:42.504+05:30  INFO 22916 --- [transfer-service] [           main] c.t.transfer.TransferServiceApplication  : Started TransferServiceApplication in 0.494 seconds (process running for 0.607)
+2026-03-08T22:47:41.233+05:30  INFO 25232 --- [transfer-service] [           main] c.t.transfer.TransferServiceApplication  : Starting TransferServiceApplication using Java 25.0.2 with PID 25232 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/transfer-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/transfer-service)
+2026-03-08T22:47:41.234+05:30  INFO 25232 --- [transfer-service] [           main] c.t.transfer.TransferServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-03-08T22:47:41.536+05:30  INFO 25232 --- [transfer-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8085 (http)
+2026-03-08T22:47:41.540+05:30  INFO 25232 --- [transfer-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-08T22:47:41.541+05:30  INFO 25232 --- [transfer-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-03-08T22:47:41.553+05:30  INFO 25232 --- [transfer-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 301 ms
+2026-03-08T22:47:41.738+05:30  INFO 25232 --- [transfer-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-03-08T22:47:41.761+05:30  INFO 25232 --- [transfer-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8085 (http) with context path '/'
+2026-03-08T22:47:41.764+05:30  INFO 25232 --- [transfer-service] [           main] c.t.transfer.TransferServiceApplication  : Started TransferServiceApplication in 0.651 seconds (process running for 0.76)

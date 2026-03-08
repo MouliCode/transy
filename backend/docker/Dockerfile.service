@@ -1,0 +1,17 @@
+# syntax=docker/dockerfile:1.7
+
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /workspace
+
+ARG MODULE
+COPY . .
+RUN chmod +x ./mvnw && ./mvnw -q -pl ${MODULE} -am -DskipTests package
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+ARG MODULE
+COPY --from=build /workspace/${MODULE}/target/*.jar /app/app.jar
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

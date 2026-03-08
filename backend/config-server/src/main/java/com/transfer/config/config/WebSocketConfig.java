@@ -11,14 +11,17 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final ConfigWebSocketHandler configWebSocketHandler;
+    private final WsAuthInterceptor wsAuthInterceptor;
 
-    public WebSocketConfig(ConfigWebSocketHandler configWebSocketHandler) {
+    public WebSocketConfig(ConfigWebSocketHandler configWebSocketHandler, WsAuthInterceptor wsAuthInterceptor) {
         this.configWebSocketHandler = configWebSocketHandler;
+        this.wsAuthInterceptor = wsAuthInterceptor;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(configWebSocketHandler, "/config/ws")
+                .addInterceptors(wsAuthInterceptor)
                 .setAllowedOrigins("*");
     }
 }
