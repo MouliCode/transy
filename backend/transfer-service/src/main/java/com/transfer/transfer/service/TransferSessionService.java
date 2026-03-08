@@ -2,102 +2,104 @@ package com.transfer.transfer.service;
 
 import com.transfer.transfer.model.TransferSession;
 import com.transfer.transfer.model.TransferStatus;
+import com.transfer.transfer.repository.TransferSessionEntity;
+import com.transfer.transfer.repository.TransferSessionJpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferSessionService {
 
-    private final Map<String, TransferSession> sessions = new ConcurrentHashMap<>();
+    private final TransferSessionJpaRepository transferSessionJpaRepository;
 
+    public TransferSessionService(TransferSessionJpaRepository transferSessionJpaRepository) {
+        this.transferSessionJpaRepository = transferSessionJpaRepository;
+    }
+
+    @Transactional
     public TransferSession create(String senderDeviceId, String receiverDeviceId, String fileName, long fileSizeBytes) {
-        String transferId = UUID.randomUUID().toString();
         Instant now = Instant.now();
-        TransferSession session = new TransferSession(
-                transferId,
-                senderDeviceId,
-                receiverDeviceId,
-                fileName,
-                fileSizeBytes,
-                0,
-                TransferStatus.PENDING,
-                now,
-                now
-        );
-        sessions.put(transferId, session);
-        return session;
+
+        TransferSessionEntity entity = new TransferSessionEntity();
+        entity.setTransferId(UUID.randomUUID().toString());
+        entity.setSenderDeviceId(senderDeviceId);
+        entity.setReceiverDeviceId(receiverDeviceId);
+        entity.setFileName(fileName);
+        entity.setFileSizeBytes(fileSizeBytes);
+        entity.setTransferredBytes(0);
+        entity.setStatus(TransferStatus.PENDING);
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
+
+        return toDomain(transferSessionJpaRepository.save(entity));
     }
 
+    @Transactional
     public TransferSession updateProgress(String transferId, long transferredBytes) {
-        TransferSession existing = sessions.get(transferId);
-        if (existing == null) {
-            return null;
-        }
-        TransferSession updated = new TransferSession(
-                existing.transferId(),
-                existing.senderDeviceId(),
-                existing.receiverDeviceId(),
-                existing.fileName(),
-                existing.fileSizeBytes(),
-                transferredBytes,
-                TransferStatus.IN_PROGRESS,
-                existing.createdAt(),
-                Instant.now()
-        );
-        sessions.put(transferId, updated);
-        return updated;
+        return transferSessionJpaRepository.findById(transferId)
+                .map(existing -> {
+                    existing.setTransferredBytes(transferredBytes);
+                    existing.setStatus(TransferStatus.IN_PROGRESS);
+                    existing.setUpdatedAt(Instant.now());
+                    return toDomain(transferSessionJpaRepository.save(existing));
+                })
+                .orElse(null);
     }
 
+    @Transactional
     public TransferSession complete(String transferId) {
-        TransferSession existing = sessions.get(transferId);
-        if (existing == null) {
-            return null;
-        }
-        TransferSession updated = new TransferSession(
-                existing.transferId(),
-                existing.senderDeviceId(),
-                existing.receiverDeviceId(),
-                existing.fileName(),
-                existing.fileSizeBytes(),
-                existing.fileSizeBytes(),
-                TransferStatus.COMPLETED,
-                existing.createdAt(),
-                Instant.now()
-        );
-        sessions.put(transferId, updated);
-        return updated;
+        return transferSessionJpaRepository.findById(transferId)
+                .map(existing -> {
+                    existing.setTransferredBytes(existing.getFileSizeBytes());
+                    existing.setStatus(TransferStatus.COMPLETED);
+                    existing.setUpdatedAt(Instant.now());
+                    return toDomain(transferSessionJpaRepository.save(existing));
+                })
+                .orElse(null);
     }
 
+    @Transactional
     public TransferSession fail(String transferId) {
-        TransferSession existing = sessions.get(transferId);
-        if (existing == null) {
-            return null;
-        }
-        TransferSession updated = new TransferSession(
-                existing.transferId(),
-                existing.senderDeviceId(),
-                existing.receiverDeviceId(),
-                existing.fileName(),
-                existing.fileSizeBytes(),
-                existing.transferredBytes(),
-                TransferStatus.FAILED,
-                existing.createdAt(),
-                Instant.now()
-        );
-        sessions.put(transferId, updated);
-        return updated;
+        return transferSessionJpaRepository.findById(transferId)
+                .map(existing -> {
+                    existing.setStatus(TransferStatus.FAILED);
+                    existing.setUpdatedAt(Instant.now());
+                    return toDomain(transferSessionJpaRepository.save(existing));
+                })
+                .orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public TransferSession get(String transferId) {
-        return sessions.get(transferId);
+        return transferSessionJpaRepository.findById(transferId)
+                .map(this::toDomain)
+                .orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public Collection<TransferSession> list() {
-        return sessions.values();
+        return transferSessionJpaRepository.findAll()
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    private TransferSession toDomain(TransferSessionEntity entity) {
+        return new TransferSession(
+                entity.getTransferId(),
+                entity.getSenderDeviceId(),
+                entity.getReceiverDeviceId(),
+                entity.getFileName(),
+                entity.getFileSizeBytes(),
+                entity.getTransferredBytes(),
+                entity.getStatus(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
     }
 }

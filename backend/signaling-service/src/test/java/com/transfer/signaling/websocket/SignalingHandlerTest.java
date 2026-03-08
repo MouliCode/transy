@@ -1,5 +1,6 @@
 package com.transfer.signaling.websocket;
 
+import com.transfer.signaling.redis.SignalingRelayPublisher;
 import com.transfer.signaling.service.SessionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.socket.CloseStatus;
@@ -16,7 +17,7 @@ class SignalingHandlerTest {
 
     private static class TestableSignalingHandler extends SignalingHandler {
         TestableSignalingHandler(SessionService sessionService) {
-            super(sessionService);
+            super(sessionService, new SignalingRelayPublisher(null, "test-channel"));
         }
 
         void invokeHandle(WebSocketSession session, TextMessage message) throws Exception {
@@ -26,7 +27,7 @@ class SignalingHandlerTest {
 
     @Test
     void registerMessageStoresSession() throws Exception {
-        SessionService sessionService = new SessionService();
+        SessionService sessionService = new SessionService(null);
         TestableSignalingHandler handler = new TestableSignalingHandler(sessionService);
         WebSocketSession sender = mock(WebSocketSession.class);
 
@@ -37,7 +38,7 @@ class SignalingHandlerTest {
 
     @Test
     void offerMessageRoutesToTargetSession() throws Exception {
-        SessionService sessionService = new SessionService();
+        SessionService sessionService = new SessionService(null);
         TestableSignalingHandler handler = new TestableSignalingHandler(sessionService);
 
         WebSocketSession target = mock(WebSocketSession.class);
@@ -54,7 +55,7 @@ class SignalingHandlerTest {
 
     @Test
     void closedTargetDoesNotReceiveMessage() throws Exception {
-        SessionService sessionService = new SessionService();
+        SessionService sessionService = new SessionService(null);
         TestableSignalingHandler handler = new TestableSignalingHandler(sessionService);
 
         WebSocketSession target = mock(WebSocketSession.class);
@@ -69,7 +70,7 @@ class SignalingHandlerTest {
 
     @Test
     void closeRemovesSessionBySocketId() {
-        SessionService sessionService = new SessionService();
+        SessionService sessionService = new SessionService(null);
         TestableSignalingHandler handler = new TestableSignalingHandler(sessionService);
 
         WebSocketSession session = mock(WebSocketSession.class);

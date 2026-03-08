@@ -1,35 +1,91 @@
 package com.transfer.signaling.service;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class SessionService {
 
-    private final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private static final String SESSION_OWNER_HASH = "signaling:session-owner";
+
+    private final ConcurrentHashMap<String, WebSocketSession> localSessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> sessionToDevice = new ConcurrentHashMap<>();
+    private final StringRedisTemplate redisTemplate;
+    private final String instanceId = UUID.randomUUID().toString();
+
+    public SessionService(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     public void register(String deviceId, WebSocketSession session) {
-        sessions.put(deviceId, session);
+        if (deviceId == null || session == null) {
+            return;
+        }
+        localSessions.put(deviceId, session);
+        String sessionId = session.getId();
+        if (sessionId != null) {
+            sessionToDevice.put(sessionId, deviceId);
+        }
+        safeRedisPut(deviceId, instanceId);
     }
 
     public void remove(String deviceId) {
         if (deviceId != null) {
-            sessions.remove(deviceId);
+            localSessions.remove(deviceId);
+            safeRedisDelete(deviceId);
         }
     }
 
     public WebSocketSession getSession(String deviceId) {
-        return sessions.get(deviceId);
+        return localSessions.get(deviceId);
     }
 
     public Map<String, WebSocketSession> getAllSessions() {
-        return sessions;
+        return localSessions;
     }
 
     public void removeBySessionId(String sessionId) {
-        sessions.entrySet().removeIf(entry -> entry.getValue().getId().equals(sessionId));
+        if (sessionId == null) {
+            return;
+        }
+        String deviceId = sessionToDevice.remove(sessionId);
+        if (deviceId != null) {
+            localSessions.remove(deviceId);
+            safeRedisDelete(deviceId);
+        }
+    }
+
+    public String getOwnerInstanceId(String deviceId) {
+        try {
+            Object value = redisTemplate.opsForHash().get(SESSION_OWNER_HASH, deviceId);
+            return value == null ? null : value.toString();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    public boolean isCurrentInstance(String ownerInstanceId) {
+        return instanceId.equals(ownerInstanceId);
+    }
+
+    private void safeRedisPut(String deviceId, String owner) {
+        try {
+            redisTemplate.opsForHash().put(SESSION_OWNER_HASH, deviceId, owner);
+        } catch (Exception ignored) {
+            // local fallback mode
+        }
+    }
+
+    private void safeRedisDelete(String deviceId) {
+        try {
+            redisTemplate.opsForHash().delete(SESSION_OWNER_HASH, deviceId);
+        } catch (Exception ignored) {
+            // local fallback mode
+        }
     }
 }

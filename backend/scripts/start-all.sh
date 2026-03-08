@@ -39,6 +39,11 @@ start_service() {
   port="$(service_port "$service")"
   local pid_file="$PID_DIR/${service}.pid"
   local log_file="$LOG_DIR/${service}.log"
+  local profile_arg=""
+
+  if [[ "$service" == "transfer-service" ]]; then
+    profile_arg="SPRING_PROFILES_ACTIVE=local"
+  fi
 
   local port_pid
   port_pid="$(listening_pid "$port")"
@@ -53,7 +58,11 @@ start_service() {
   fi
 
   echo "Starting $service on port $port ..."
-  nohup "$ROOT_DIR/mvnw" -q -f "$ROOT_DIR/pom.xml" -pl "$service" spring-boot:run >"$log_file" 2>&1 &
+  if [[ -n "$profile_arg" ]]; then
+    nohup env $profile_arg "$ROOT_DIR/mvnw" -q -f "$ROOT_DIR/pom.xml" -pl "$service" spring-boot:run >"$log_file" 2>&1 &
+  else
+    nohup "$ROOT_DIR/mvnw" -q -f "$ROOT_DIR/pom.xml" -pl "$service" spring-boot:run >"$log_file" 2>&1 &
+  fi
 
   local attempts=0
   while [[ $attempts -lt 30 ]]; do
@@ -71,9 +80,17 @@ start_service() {
   return 1
 }
 
+failed=()
 for service in "${SERVICES[@]}"; do
-  start_service "$service"
+  if ! start_service "$service"; then
+    failed+=("$service")
+  fi
 done
 
-echo "All implemented microservices are running."
+if [[ ${#failed[@]} -eq 0 ]]; then
+  echo "All implemented microservices are running."
+else
+  echo "Failed services: ${failed[*]}"
+  exit 1
+fi
 echo "Use scripts/status-all.sh to check status and scripts/stop-all.sh to stop all services."

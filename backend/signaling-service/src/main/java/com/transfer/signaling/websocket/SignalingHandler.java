@@ -2,6 +2,7 @@ package com.transfer.signaling.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transfer.signaling.model.SignalMessage;
+import com.transfer.signaling.redis.SignalingRelayPublisher;
 import com.transfer.signaling.service.SessionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -13,10 +14,12 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class SignalingHandler extends TextWebSocketHandler {
 
     private final SessionService sessionService;
+    private final SignalingRelayPublisher signalingRelayPublisher;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public SignalingHandler(SessionService sessionService) {
+    public SignalingHandler(SessionService sessionService, SignalingRelayPublisher signalingRelayPublisher) {
         this.sessionService = sessionService;
+        this.signalingRelayPublisher = signalingRelayPublisher;
     }
 
     @Override
@@ -37,6 +40,12 @@ public class SignalingHandler extends TextWebSocketHandler {
             WebSocketSession targetSession = sessionService.getSession(signal.getTo());
             if (targetSession != null && targetSession.isOpen()) {
                 targetSession.sendMessage(message);
+                return;
+            }
+
+            String ownerInstanceId = sessionService.getOwnerInstanceId(signal.getTo());
+            if (ownerInstanceId != null && !sessionService.isCurrentInstance(ownerInstanceId)) {
+                signalingRelayPublisher.publish(signal.getTo(), message.getPayload());
             }
         }
     }
