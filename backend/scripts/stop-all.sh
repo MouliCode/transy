@@ -5,8 +5,12 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PID_DIR="$ROOT_DIR/.pids"
 
 SERVICES=(
+  "api-gateway:8080"
+  "config-server:8888"
   "device-service:8083"
+  "discovery-server:8761"
   "signaling-service:8082"
+  "transfer-service:8085"
 )
 
 for item in "${SERVICES[@]}"; do

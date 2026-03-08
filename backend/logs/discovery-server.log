@@ -1,0 +1,18 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.3)
+
+2026-03-08T22:33:40.049+05:30  INFO 22770 --- [discovery-server] [           main] c.t.d.DiscoveryServerApplication         : Starting DiscoveryServerApplication using Java 25.0.2 with PID 22770 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/discovery-server/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/discovery-server)
+2026-03-08T22:33:40.050+05:30  INFO 22770 --- [discovery-server] [           main] c.t.d.DiscoveryServerApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-03-08T22:33:40.290+05:30  INFO 22770 --- [discovery-server] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8761 (http)
+2026-03-08T22:33:40.295+05:30  INFO 22770 --- [discovery-server] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-08T22:33:40.295+05:30  INFO 22770 --- [discovery-server] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-03-08T22:33:40.307+05:30  INFO 22770 --- [discovery-server] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 236 ms
+2026-03-08T22:33:40.443+05:30  INFO 22770 --- [discovery-server] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8761 (http) with context path '/'
+2026-03-08T22:33:40.444+05:30  INFO 22770 --- [discovery-server] [           main] c.t.d.DiscoveryServerApplication         : Started DiscoveryServerApplication in 0.518 seconds (process running for 0.629)
