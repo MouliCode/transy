@@ -6,14 +6,22 @@ LOG_DIR="$ROOT_DIR/logs"
 PID_DIR="$ROOT_DIR/.pids"
 
 SERVICES=(
+  "api-gateway"
+  "config-server"
   "device-service"
+  "discovery-server"
   "signaling-service"
+  "transfer-service"
 )
 
 service_port() {
   case "$1" in
+    api-gateway) echo "8080" ;;
+    config-server) echo "8888" ;;
     device-service) echo "8083" ;;
+    discovery-server) echo "8761" ;;
     signaling-service) echo "8082" ;;
+    transfer-service) echo "8085" ;;
     *) echo "" ;;
   esac
 }

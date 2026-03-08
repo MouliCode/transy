@@ -8,20 +8,12 @@
 
  :: Spring Boot ::                (v4.0.3)
 
-2026-03-08T21:13:01.050+05:30  INFO 19874 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Starting SignalingServiceApplication using Java 25.0.2 with PID 19874 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service)
-2026-03-08T21:13:01.051+05:30  INFO 19874 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-03-08T21:13:01.283+05:30  INFO 19874 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8082 (http)
-2026-03-08T21:13:01.288+05:30  INFO 19874 --- [signaling-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-03-08T21:13:01.288+05:30  INFO 19874 --- [signaling-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
-2026-03-08T21:13:01.301+05:30  INFO 19874 --- [signaling-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 234 ms
-2026-03-08T21:13:01.431+05:30  INFO 19874 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8082 (http) with context path '/'
-2026-03-08T21:13:01.432+05:30  INFO 19874 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Started SignalingServiceApplication in 0.5 seconds (process running for 0.611)
-2026-03-08T21:13:43.270+05:30  INFO 19874 --- [signaling-service] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-03-08T21:13:43.273+05:30  INFO 19874 --- [signaling-service] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.0.3:run (default-cli) on project signaling-service: Process terminated with exit code: 143 -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+2026-03-08T22:47:38.214+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Starting SignalingServiceApplication using Java 25.0.2 with PID 25077 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service)
+2026-03-08T22:47:38.215+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-03-08T22:47:38.529+05:30  INFO 25077 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8082 (http)
+2026-03-08T22:47:38.534+05:30  INFO 25077 --- [signaling-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-08T22:47:38.534+05:30  INFO 25077 --- [signaling-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-03-08T22:47:38.550+05:30  INFO 25077 --- [signaling-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 318 ms
+2026-03-08T22:47:38.764+05:30  INFO 25077 --- [signaling-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-03-08T22:47:38.786+05:30  INFO 25077 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8082 (http) with context path '/'
+2026-03-08T22:47:38.790+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Started SignalingServiceApplication in 0.695 seconds (process running for 0.812)
