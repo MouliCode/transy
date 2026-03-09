@@ -11,6 +11,7 @@ services:
     environment:
       GATEWAY_PORT: 8080
       WS_API_KEY: ${WS_API_KEY}
+      APP_LOG_ROOT_LEVEL: ${APP_LOG_ROOT_LEVEL:-3}
       LOG_PATH: ${LOG_PATH:-/tmp/logs}
       LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
       LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
@@ -44,6 +45,7 @@ services:
     environment:
       SIGNALING_PORT: 8082
       WS_API_KEY: ${WS_API_KEY}
+      APP_LOG_ROOT_LEVEL: ${APP_LOG_ROOT_LEVEL:-3}
       LOG_PATH: ${LOG_PATH:-/tmp/logs}
       LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
       LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
@@ -73,6 +75,7 @@ services:
     environment:
       DEVICE_PORT: 8083
       WS_API_KEY: ${WS_API_KEY}
+      APP_LOG_ROOT_LEVEL: ${APP_LOG_ROOT_LEVEL:-3}
       LOG_PATH: ${LOG_PATH:-/tmp/logs}
       LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
       LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
@@ -100,6 +103,7 @@ services:
     environment:
       TRANSFER_PORT: 8085
       WS_API_KEY: ${WS_API_KEY}
+      APP_LOG_ROOT_LEVEL: ${APP_LOG_ROOT_LEVEL:-3}
       LOG_PATH: ${LOG_PATH:-/tmp/logs}
       LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
       LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
@@ -130,6 +134,7 @@ services:
     environment:
       CONFIG_PORT: 8888
       WS_API_KEY: ${WS_API_KEY}
+      APP_LOG_ROOT_LEVEL: ${APP_LOG_ROOT_LEVEL:-3}
       LOG_PATH: ${LOG_PATH:-/tmp/logs}
       LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
       LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
@@ -152,6 +157,7 @@ services:
     environment:
       DISCOVERY_PORT: 8761
       WS_API_KEY: ${WS_API_KEY}
+      APP_LOG_ROOT_LEVEL: ${APP_LOG_ROOT_LEVEL:-3}
       LOG_PATH: ${LOG_PATH:-/tmp/logs}
       LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
       LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
