@@ -8,12 +8,18 @@
 
  :: Spring Boot ::                (v4.0.3)
 
-2026-03-08T22:47:38.214+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Starting SignalingServiceApplication using Java 25.0.2 with PID 25077 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service)
-2026-03-08T22:47:38.215+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-03-08T22:47:38.529+05:30  INFO 25077 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8082 (http)
-2026-03-08T22:47:38.534+05:30  INFO 25077 --- [signaling-service] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-03-08T22:47:38.534+05:30  INFO 25077 --- [signaling-service] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
-2026-03-08T22:47:38.550+05:30  INFO 25077 --- [signaling-service] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 318 ms
-2026-03-08T22:47:38.764+05:30  INFO 25077 --- [signaling-service] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
-2026-03-08T22:47:38.786+05:30  INFO 25077 --- [signaling-service] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8082 (http) with context path '/'
-2026-03-08T22:47:38.790+05:30  INFO 25077 --- [signaling-service] [           main] c.t.s.SignalingServiceApplication        : Started SignalingServiceApplication in 0.695 seconds (process running for 0.812)
+2026-03-09T23:01:53.640+05:30 level= INFO service=signaling-service trace= span= logger=c.t.s.SignalingServiceApplication msg=Starting SignalingServiceApplication using Java 25.0.2 with PID 56029 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/signaling-service)
+2026-03-09T23:01:53.641+05:30 level= INFO service=signaling-service trace= span= logger=c.t.s.SignalingServiceApplication msg=No active profile set, falling back to 1 default profile: "default"
+2026-03-09T23:01:53.915+05:30 level= INFO service=signaling-service trace= span= logger=o.s.d.r.c.RepositoryConfigurationDelegate msg=Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-09T23:01:53.916+05:30 level= INFO service=signaling-service trace= span= logger=o.s.d.r.c.RepositoryConfigurationDelegate msg=Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-03-09T23:01:53.924+05:30 level= INFO service=signaling-service trace= span= logger=o.s.d.r.c.RepositoryConfigurationDelegate msg=Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2026-03-09T23:01:54.054+05:30 level= INFO service=signaling-service trace= span= logger=o.s.boot.tomcat.TomcatWebServer msg=Tomcat initialized with port 8082 (http)
+2026-03-09T23:01:54.058+05:30 level= INFO service=signaling-service trace= span= logger=o.a.coyote.http11.Http11NioProtocol msg=Initializing ProtocolHandler ["http-nio-8082"]
+2026-03-09T23:01:54.058+05:30 level= INFO service=signaling-service trace= span= logger=o.a.catalina.core.StandardService msg=Starting service [Tomcat]
+2026-03-09T23:01:54.058+05:30 level= INFO service=signaling-service trace= span= logger=o.a.catalina.core.StandardEngine msg=Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-03-09T23:01:54.075+05:30 level= INFO service=signaling-service trace= span= logger=o.s.b.w.c.s.WebApplicationContextInitializer msg=Root WebApplicationContext: initialization completed in 419 ms
+2026-03-09T23:01:54.160+05:30 level= WARN service=signaling-service trace= span= logger=i.n.r.d.DnsServerAddressStreamProviders msg=Can not find io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider in the classpath, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS. Check whether you have a dependency on 'io.netty:netty-resolver-dns-native-macos'
+2026-03-09T23:01:54.454+05:30 level= INFO service=signaling-service trace= span= logger=o.s.b.a.e.web.EndpointLinksResolver msg=Exposing 3 endpoints beneath base path '/actuator'
+2026-03-09T23:01:54.469+05:30 level= INFO service=signaling-service trace= span= logger=o.a.coyote.http11.Http11NioProtocol msg=Starting ProtocolHandler ["http-nio-8082"]
+2026-03-09T23:01:54.476+05:30 level= INFO service=signaling-service trace= span= logger=o.s.boot.tomcat.TomcatWebServer msg=Tomcat started on port 8082 (http) with context path '/'
+2026-03-09T23:01:54.480+05:30 level= INFO service=signaling-service trace= span= logger=c.t.s.SignalingServiceApplication msg=Started SignalingServiceApplication in 1.008 seconds (process running for 1.127)

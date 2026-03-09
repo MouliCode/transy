@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="application"/>
+    <property name="LOG_PATH" value="${LOG_PATH:-/tmp/logs}"/>
+    <property name="ROOT_LOG_LEVEL" value="${LOG_LEVEL_ROOT:-INFO}"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} level=%5p service=${APP_NAME} trace=%X{traceId:-} span=%X{spanId:-} logger=%logger{36} msg=%m%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}/application.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>${LOG_MAX_FILE_SIZE:-20MB}</maxFileSize>
+            <maxHistory>${LOG_MAX_HISTORY:-30}</maxHistory>
+            <totalSizeCap>${LOG_TOTAL_SIZE_CAP:-2GB}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>${LOG_ERROR_MAX_FILE_SIZE:-20MB}</maxFileSize>
+            <maxHistory>${LOG_MAX_HISTORY:-30}</maxHistory>
+            <totalSizeCap>${LOG_TOTAL_SIZE_CAP:-2GB}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${LOG_QUEUE_SIZE:-4096}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="CONSOLE"/>
+    </appender>
+
+    <appender name="ASYNC_APP_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${LOG_QUEUE_SIZE:-4096}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="APP_FILE"/>
+    </appender>
+
+    <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${LOG_QUEUE_SIZE:-4096}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="ERROR_FILE"/>
+    </appender>
+
+    <root level="${ROOT_LOG_LEVEL}">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+        <appender-ref ref="ASYNC_APP_FILE"/>
+        <appender-ref ref="ASYNC_ERROR_FILE"/>
+    </root>
+</configuration>

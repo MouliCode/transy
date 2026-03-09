@@ -34,6 +34,10 @@ build/
 
 *.log
 
-/logs
-/.pids
+backend/logs
+backend/.pids
 */.data
+/.pids/
+/logs/
+.env.production
+.env.docker.local

@@ -5,6 +5,7 @@ services:
       dockerfile: docker/Dockerfile.service
       args:
         MODULE: api-gateway
+    image: transy/api-gateway:${APP_IMAGE_TAG}
     restart: unless-stopped
     ports:
       - "${GATEWAY_PORT:-8080}:8080"
@@ -18,105 +19,14 @@ services:
       LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
       LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
       LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
-      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-1.0}
-      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT:-http://localhost:4318/v1/traces}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.2}
+      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT}
     depends_on:
-      config-server:
-        condition: service_started
-      device-service:
-        condition: service_started
-      discovery-server:
-        condition: service_started
-      signaling-service:
-        condition: service_started
-      transfer-service:
-        condition: service_started
-
-  signaling-service:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.service
-      args:
-        MODULE: signaling-service
-    restart: unless-stopped
-    ports:
-      - "${SIGNALING_PORT:-8082}:8082"
-    environment:
-      SIGNALING_PORT: 8082
-      WS_API_KEY: ${WS_API_KEY}
-      LOG_PATH: ${LOG_PATH:-/tmp/logs}
-      LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
-      LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
-      LOG_ERROR_MAX_FILE_SIZE: ${LOG_ERROR_MAX_FILE_SIZE:-20MB}
-      LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
-      LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
-      LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
-      REDIS_HOST: ${REDIS_HOST:-redis}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      REDIS_PUBSUB_ENABLED: ${REDIS_PUBSUB_ENABLED:-true}
-      REDIS_RELAY_CHANNEL: ${REDIS_RELAY_CHANNEL:-signaling:relay}
-      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-1.0}
-      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT:-http://localhost:4318/v1/traces}
-    depends_on:
-      redis:
-        condition: service_healthy
-
-  device-service:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.service
-      args:
-        MODULE: device-service
-    restart: unless-stopped
-    ports:
-      - "${DEVICE_PORT:-8083}:8083"
-    environment:
-      DEVICE_PORT: 8083
-      WS_API_KEY: ${WS_API_KEY}
-      LOG_PATH: ${LOG_PATH:-/tmp/logs}
-      LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
-      LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
-      LOG_ERROR_MAX_FILE_SIZE: ${LOG_ERROR_MAX_FILE_SIZE:-20MB}
-      LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
-      LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
-      LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
-      REDIS_HOST: ${REDIS_HOST:-redis}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-1.0}
-      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT:-http://localhost:4318/v1/traces}
-    depends_on:
-      redis:
-        condition: service_healthy
-
-  transfer-service:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.service
-      args:
-        MODULE: transfer-service
-    restart: unless-stopped
-    ports:
-      - "${TRANSFER_PORT:-8085}:8085"
-    environment:
-      TRANSFER_PORT: 8085
-      WS_API_KEY: ${WS_API_KEY}
-      LOG_PATH: ${LOG_PATH:-/tmp/logs}
-      LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
-      LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
-      LOG_ERROR_MAX_FILE_SIZE: ${LOG_ERROR_MAX_FILE_SIZE:-20MB}
-      LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
-      LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
-      LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
-      POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
-      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
-      POSTGRES_DB: ${POSTGRES_DB:-transy}
-      POSTGRES_USER: ${POSTGRES_USER:-transy}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-transy}
-      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-1.0}
-      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT:-http://localhost:4318/v1/traces}
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - config-server
+      - device-service
+      - discovery-server
+      - signaling-service
+      - transfer-service
 
   config-server:
     build:
@@ -124,6 +34,7 @@ services:
       dockerfile: docker/Dockerfile.service
       args:
         MODULE: config-server
+    image: transy/config-server:${APP_IMAGE_TAG}
     restart: unless-stopped
     ports:
       - "${CONFIG_PORT:-8888}:8888"
@@ -137,8 +48,8 @@ services:
       LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
       LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
       LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
-      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-1.0}
-      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT:-http://localhost:4318/v1/traces}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.2}
+      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT}
 
   discovery-server:
     build:
@@ -146,6 +57,7 @@ services:
       dockerfile: docker/Dockerfile.service
       args:
         MODULE: discovery-server
+    image: transy/discovery-server:${APP_IMAGE_TAG}
     restart: unless-stopped
     ports:
       - "${DISCOVERY_PORT:-8761}:8761"
@@ -159,14 +71,101 @@ services:
       LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
       LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
       LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
-      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-1.0}
-      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT:-http://localhost:4318/v1/traces}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.2}
+      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT}
+
+  device-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: device-service
+    image: transy/device-service:${APP_IMAGE_TAG}
+    restart: unless-stopped
+    ports:
+      - "${DEVICE_PORT:-8083}:8083"
+    environment:
+      DEVICE_PORT: 8083
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      WS_API_KEY: ${WS_API_KEY}
+      LOG_PATH: ${LOG_PATH:-/tmp/logs}
+      LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
+      LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
+      LOG_ERROR_MAX_FILE_SIZE: ${LOG_ERROR_MAX_FILE_SIZE:-20MB}
+      LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
+      LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
+      LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.2}
+      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  signaling-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: signaling-service
+    image: transy/signaling-service:${APP_IMAGE_TAG}
+    restart: unless-stopped
+    ports:
+      - "${SIGNALING_PORT:-8082}:8082"
+    environment:
+      SIGNALING_PORT: 8082
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PUBSUB_ENABLED: ${REDIS_PUBSUB_ENABLED:-true}
+      REDIS_RELAY_CHANNEL: ${REDIS_RELAY_CHANNEL:-signaling:relay}
+      WS_API_KEY: ${WS_API_KEY}
+      LOG_PATH: ${LOG_PATH:-/tmp/logs}
+      LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
+      LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
+      LOG_ERROR_MAX_FILE_SIZE: ${LOG_ERROR_MAX_FILE_SIZE:-20MB}
+      LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
+      LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
+      LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.2}
+      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  transfer-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.service
+      args:
+        MODULE: transfer-service
+    image: transy/transfer-service:${APP_IMAGE_TAG}
+    restart: unless-stopped
+    ports:
+      - "${TRANSFER_PORT:-8085}:8085"
+    environment:
+      TRANSFER_PORT: 8085
+      POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_DB: ${POSTGRES_DB:-transy}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      WS_API_KEY: ${WS_API_KEY}
+      LOG_PATH: ${LOG_PATH:-/tmp/logs}
+      LOG_LEVEL_ROOT: ${LOG_LEVEL_ROOT:-INFO}
+      LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-20MB}
+      LOG_ERROR_MAX_FILE_SIZE: ${LOG_ERROR_MAX_FILE_SIZE:-20MB}
+      LOG_MAX_HISTORY: ${LOG_MAX_HISTORY:-30}
+      LOG_TOTAL_SIZE_CAP: ${LOG_TOTAL_SIZE_CAP:-2GB}
+      LOG_QUEUE_SIZE: ${LOG_QUEUE_SIZE:-4096}
+      TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING_PROBABILITY:-0.2}
+      OTLP_TRACING_ENDPOINT: ${OTLP_TRACING_ENDPOINT}
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -180,17 +179,32 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-transy}
-      POSTGRES_USER: ${POSTGRES_USER:-transy}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-transy}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-transy} -d ${POSTGRES_DB:-transy}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-transy}"]
       interval: 5s
       timeout: 3s
       retries: 20
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    restart: unless-stopped
+    profiles:
+      - monitoring
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-gateway
+      - config-server
+      - device-service
+      - discovery-server
+      - signaling-service
+      - transfer-service
 
 volumes:
   postgres_data:
@@ -198,4 +212,4 @@ volumes:
 
 networks:
   default:
-    name: transy-network
+    name: transy-network-prod
