@@ -31,6 +31,20 @@ listening_pid() {
   lsof -t -nP -iTCP:"$port" -sTCP:LISTEN 2>/dev/null | head -n 1 || true
 }
 
+process_command() {
+  local pid="$1"
+  ps -p "$pid" -o command= 2>/dev/null || true
+}
+
+is_managed_java_pid() {
+  local pid="$1"
+  local cmd
+  cmd="$(process_command "$pid")"
+  [[ -n "$cmd" ]] || return 1
+  [[ "$cmd" == *java* ]] || return 1
+  [[ "$cmd" == *"$ROOT_DIR"* ]]
+}
+
 mkdir -p "$LOG_DIR" "$PID_DIR"
 
 start_service() {
@@ -48,9 +62,13 @@ start_service() {
   local port_pid
   port_pid="$(listening_pid "$port")"
   if [[ -n "$port_pid" ]]; then
-    echo "$service already running on port $port (pid=$port_pid)"
-    echo "$port_pid" > "$pid_file"
-    return
+    if is_managed_java_pid "$port_pid"; then
+      echo "$service already running on port $port (pid=$port_pid)"
+      echo "$port_pid" > "$pid_file"
+      return
+    fi
+    echo "Cannot start $service: port $port is used by unmanaged process (pid=$port_pid)."
+    return 1
   fi
 
   if [[ -f "$pid_file" ]]; then
@@ -69,6 +87,10 @@ start_service() {
     sleep 1
     port_pid="$(listening_pid "$port")"
     if [[ -n "$port_pid" ]]; then
+      if ! is_managed_java_pid "$port_pid"; then
+        attempts=$((attempts + 1))
+        continue
+      fi
       echo "$port_pid" > "$pid_file"
       echo "$service started (pid=$port_pid, port=$port, log=$log_file)"
       return

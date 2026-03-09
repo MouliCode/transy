@@ -8,12 +8,14 @@
 
  :: Spring Boot ::                (v4.0.3)
 
-2026-03-08T22:47:25.885+05:30  INFO 24429 --- [api-gateway] [           main] c.t.gateway.ApiGatewayApplication        : Starting ApiGatewayApplication using Java 25.0.2 with PID 24429 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/api-gateway/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/api-gateway)
-2026-03-08T22:47:25.886+05:30  INFO 24429 --- [api-gateway] [           main] c.t.gateway.ApiGatewayApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-03-08T22:47:26.377+05:30  INFO 24429 --- [api-gateway] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-03-08T22:47:26.385+05:30  INFO 24429 --- [api-gateway] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-03-08T22:47:26.385+05:30  INFO 24429 --- [api-gateway] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
-2026-03-08T22:47:26.404+05:30  INFO 24429 --- [api-gateway] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 496 ms
-2026-03-08T22:47:26.905+05:30  INFO 24429 --- [api-gateway] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
-2026-03-08T22:47:26.934+05:30  INFO 24429 --- [api-gateway] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-03-08T22:47:26.939+05:30  INFO 24429 --- [api-gateway] [           main] c.t.gateway.ApiGatewayApplication        : Started ApiGatewayApplication in 1.201 seconds (process running for 1.337)
+2026-03-09T23:01:43.519+05:30 level= INFO service=api-gateway trace= span= logger=c.t.gateway.ApiGatewayApplication msg=Starting ApiGatewayApplication using Java 25.0.2 with PID 55444 (/Users/chandramouli/Documents/Coding_Projects/transy/backend/api-gateway/target/classes started by chandramouli in /Users/chandramouli/Documents/Coding_Projects/transy/backend/api-gateway)
+2026-03-09T23:01:43.519+05:30 level= INFO service=api-gateway trace= span= logger=c.t.gateway.ApiGatewayApplication msg=No active profile set, falling back to 1 default profile: "default"
+2026-03-09T23:01:43.814+05:30 level= INFO service=api-gateway trace= span= logger=o.s.boot.tomcat.TomcatWebServer msg=Tomcat initialized with port 8080 (http)
+2026-03-09T23:01:43.818+05:30 level= INFO service=api-gateway trace= span= logger=o.a.coyote.http11.Http11NioProtocol msg=Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-09T23:01:43.818+05:30 level= INFO service=api-gateway trace= span= logger=o.a.catalina.core.StandardService msg=Starting service [Tomcat]
+2026-03-09T23:01:43.818+05:30 level= INFO service=api-gateway trace= span= logger=o.a.catalina.core.StandardEngine msg=Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-03-09T23:01:43.832+05:30 level= INFO service=api-gateway trace= span= logger=o.s.b.w.c.s.WebApplicationContextInitializer msg=Root WebApplicationContext: initialization completed in 298 ms
+2026-03-09T23:01:44.039+05:30 level= INFO service=api-gateway trace= span= logger=o.s.b.a.e.web.EndpointLinksResolver msg=Exposing 3 endpoints beneath base path '/actuator'
+2026-03-09T23:01:44.053+05:30 level= INFO service=api-gateway trace= span= logger=o.a.coyote.http11.Http11NioProtocol msg=Starting ProtocolHandler ["http-nio-8080"]
+2026-03-09T23:01:44.059+05:30 level= INFO service=api-gateway trace= span= logger=o.s.boot.tomcat.TomcatWebServer msg=Tomcat started on port 8080 (http) with context path '/'
+2026-03-09T23:01:44.062+05:30 level= INFO service=api-gateway trace= span= logger=c.t.gateway.ApiGatewayApplication msg=Started ApiGatewayApplication in 0.711 seconds (process running for 0.825)

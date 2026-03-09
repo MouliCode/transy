@@ -1,6 +1,8 @@
 package com.transfer.discovery.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import com.transfer.discovery.model.DiscoveryMessage;
 import com.transfer.discovery.service.DiscoveryRegistryService;
 import com.transfer.discovery.service.DiscoverySessionService;
@@ -18,16 +20,19 @@ public class DiscoveryWebSocketHandler extends TextWebSocketHandler {
     private final DiscoveryRegistryService discoveryRegistryService;
     private final DiscoverySessionService discoverySessionService;
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final Logger logger;
 
     public DiscoveryWebSocketHandler(DiscoveryRegistryService discoveryRegistryService,
                                      DiscoverySessionService discoverySessionService) {
         this.discoveryRegistryService = discoveryRegistryService;
         this.discoverySessionService = discoverySessionService;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         discoverySessionService.add(session);
+        logger.info("Discovery websocket connected: " + session.getId());
     }
 
     @Override
@@ -42,6 +47,7 @@ public class DiscoveryWebSocketHandler extends TextWebSocketHandler {
                 if (input.getServiceName() != null && input.getHost() != null && input.getPort() != null) {
                     discoveryRegistryService.register(input.getServiceName(), input.getHost(), input.getPort(), session.getId());
                     broadcastServiceList();
+                    logger.info("Registered discovery service: " + input.getServiceName());
                 }
             }
             case "HEARTBEAT_SERVICE" -> {
@@ -53,12 +59,14 @@ public class DiscoveryWebSocketHandler extends TextWebSocketHandler {
                 if (input.getServiceName() != null) {
                     discoveryRegistryService.unregister(input.getServiceName());
                     broadcastServiceList();
+                    logger.info("Unregistered discovery service: " + input.getServiceName());
                 }
             }
             case "LIST_SERVICES" -> sendServiceList(session);
             default -> {
                 DiscoveryMessage error = DiscoveryMessage.ofType("ERROR");
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(error)));
+                logger.warning("Unsupported discovery message type: " + input.getType());
             }
         }
     }
@@ -69,6 +77,7 @@ public class DiscoveryWebSocketHandler extends TextWebSocketHandler {
         String removed = discoveryRegistryService.unregisterBySession(session.getId());
         if (removed != null) {
             broadcastServiceList();
+            logger.info("Removed discovery service for closed session: " + removed);
         }
         super.afterConnectionClosed(session, status);
     }
