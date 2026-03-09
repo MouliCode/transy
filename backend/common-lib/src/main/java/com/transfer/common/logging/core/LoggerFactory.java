@@ -3,6 +3,8 @@ package com.transfer.common.logging.core;
 import com.transfer.common.logging.appenders.ConsoleAppender;
 import com.transfer.common.logging.appenders.DatabaseAppender;
 import com.transfer.common.logging.appenders.FileAppender;
+import com.transfer.common.logging.filters.LevelFilter;
+import com.transfer.common.logging.formatters.SimpleFormatter;
 
 import java.sql.Connection;
 
@@ -20,19 +22,25 @@ public final class LoggerFactory {
     public static Logger create(String loggerName, LoggingProperties properties, Connection connection) {
         LoggerImpl logger = new LoggerImpl(loggerName, false);
         logger.setLevel(properties.getRootLevel());
+        logger.addFilter(new LevelFilter(properties.getFilterLevel()));
+        String resolvedFilePath = properties.getFilePath().replace("%LOGGER%", loggerName);
+        SimpleFormatter formatter = new SimpleFormatter(properties.getFormatPattern());
 
         for (String destination : properties.getDestinations()) {
             switch (destination) {
                 case "console" -> {
                     ConsoleAppender appender = new ConsoleAppender(properties.getRootLevel());
+                    appender.setFormatter(formatter);
                     logger.addAppender(appender);
                 }
                 case "file" -> {
-                    FileAppender appender = new FileAppender(properties.getFilePath(), properties.getRootLevel());
+                    FileAppender appender = new FileAppender(resolvedFilePath, properties.getRootLevel());
+                    appender.setFormatter(formatter);
                     logger.addAppender(appender);
                 }
                 case "database" -> {
                     DatabaseAppender appender = new DatabaseAppender(properties.getDbTable(), properties.getRootLevel());
+                    appender.setFormatter(formatter);
                     if (connection != null) {
                         appender.setConnection(connection);
                     }
@@ -45,7 +53,9 @@ public final class LoggerFactory {
         }
 
         if (logger.getAppenders().isEmpty()) {
-            logger.addAppender(new ConsoleAppender(properties.getRootLevel()));
+            ConsoleAppender appender = new ConsoleAppender(properties.getRootLevel());
+            appender.setFormatter(formatter);
+            logger.addAppender(appender);
         }
 
         return logger;

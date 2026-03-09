@@ -1,5 +1,7 @@
 package com.transfer.device.service;
 
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,15 +19,18 @@ public class DeviceSessionService {
     private final Map<String, String> sessionDeviceMapping = new ConcurrentHashMap<>();
     private final StringRedisTemplate redisTemplate;
     private final String instanceId = UUID.randomUUID().toString();
+    private final Logger logger;
 
     public DeviceSessionService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     public void bind(String deviceId, WebSocketSession session) {
         deviceSessions.put(deviceId, session);
         sessionDeviceMapping.put(session.getId(), deviceId);
         safeRedisPut(deviceId, instanceId);
+        logger.info("Bound device session: " + deviceId);
     }
 
     public String unbindBySessionId(String sessionId) {
@@ -33,6 +38,7 @@ public class DeviceSessionService {
         if (deviceId != null) {
             deviceSessions.remove(deviceId);
             safeRedisDelete(deviceId);
+            logger.info("Unbound device session: " + deviceId);
         }
         return deviceId;
     }
@@ -44,16 +50,16 @@ public class DeviceSessionService {
     private void safeRedisPut(String deviceId, String ownerInstanceId) {
         try {
             redisTemplate.opsForHash().put(SESSION_OWNER_HASH, deviceId, ownerInstanceId);
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis put failed for device session owner: " + exception.getMessage());
         }
     }
 
     private void safeRedisDelete(String deviceId) {
         try {
             redisTemplate.opsForHash().delete(SESSION_OWNER_HASH, deviceId);
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis delete failed for device session owner: " + exception.getMessage());
         }
     }
 }

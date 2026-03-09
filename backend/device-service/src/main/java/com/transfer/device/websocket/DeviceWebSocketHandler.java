@@ -1,6 +1,8 @@
 package com.transfer.device.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import com.transfer.device.model.Device;
 import com.transfer.device.model.DeviceWsMessage;
 import com.transfer.device.model.RegisterDeviceRequest;
@@ -20,10 +22,12 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
     private final DeviceService deviceService;
     private final DeviceSessionService deviceSessionService;
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final Logger logger;
 
     public DeviceWebSocketHandler(DeviceService deviceService, DeviceSessionService deviceSessionService) {
         this.deviceService = deviceService;
         this.deviceSessionService = deviceSessionService;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     @Override
@@ -48,7 +52,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
                 sendDeviceList(session);
             }
             default -> {
-                // ignore unsupported message types
+                logger.warning("Unsupported device message type: " + incoming.getType());
             }
         }
     }
@@ -58,6 +62,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         String disconnectedDeviceId = deviceSessionService.unbindBySessionId(session.getId());
         if (disconnectedDeviceId != null) {
             deviceService.remove(disconnectedDeviceId);
+            logger.info("Device disconnected and removed: " + disconnectedDeviceId);
             DeviceWsMessage left = DeviceWsMessage.ofType("DEVICE_LEFT");
             left.setDeviceId(disconnectedDeviceId);
             broadcast(left);
@@ -70,6 +75,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         if (isBlank(incoming.getDeviceId()) || isBlank(incoming.getDeviceName()) || isBlank(incoming.getPlatform())) {
             DeviceWsMessage error = DeviceWsMessage.ofType("ERROR");
             send(session, error);
+            logger.warning("Invalid REGISTER payload received on device websocket");
             return;
         }
 
@@ -80,6 +86,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         );
         Device registered = deviceService.register(request);
         deviceSessionService.bind(registered.deviceId(), session);
+        logger.info("Registered device via websocket: " + registered.deviceId());
 
         DeviceWsMessage ack = DeviceWsMessage.ofType("REGISTERED");
         ack.setDeviceId(registered.deviceId());

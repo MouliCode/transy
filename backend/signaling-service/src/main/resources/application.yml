@@ -12,8 +12,6 @@ spring:
 app:
   security:
     ws-api-key: ${WS_API_KEY:dev-ws-key}
-  logging:
-    root-level: ${APP_LOG_ROOT_LEVEL:3}
   redis:
     pubsub-enabled: ${REDIS_PUBSUB_ENABLED:false}
     relay-channel: ${REDIS_RELAY_CHANNEL:signaling:relay}

@@ -1,6 +1,8 @@
 package com.transfer.config.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import com.transfer.config.model.ConfigMessage;
 import com.transfer.config.service.RuntimeConfigService;
 import org.springframework.stereotype.Component;
@@ -13,9 +15,11 @@ public class ConfigWebSocketHandler extends TextWebSocketHandler {
 
     private final RuntimeConfigService runtimeConfigService;
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final Logger logger;
 
     public ConfigWebSocketHandler(RuntimeConfigService runtimeConfigService) {
         this.runtimeConfigService = runtimeConfigService;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     @Override
@@ -43,11 +47,13 @@ public class ConfigWebSocketHandler extends TextWebSocketHandler {
                 out.setKey(input.getKey());
                 out.setValue(input.getValue());
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(out)));
+                logger.info("Updated runtime config key: " + input.getKey());
             }
             default -> {
                 ConfigMessage out = ConfigMessage.ofType("ERROR");
                 out.setValue("Unsupported config message type");
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(out)));
+                logger.warning("Unsupported config message type: " + input.getType());
             }
         }
     }

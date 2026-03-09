@@ -1,6 +1,8 @@
 package com.transfer.device.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import com.transfer.device.model.Device;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,9 +24,11 @@ public class RedisBackedDeviceRepository implements DeviceRepository {
     private final StringRedisTemplate redisTemplate;
     private final Map<String, Device> fallbackStorage = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final Logger logger;
 
     public RedisBackedDeviceRepository(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     @Override
@@ -32,8 +36,8 @@ public class RedisBackedDeviceRepository implements DeviceRepository {
         fallbackStorage.put(device.deviceId(), device);
         try {
             redisTemplate.opsForHash().put(DEVICE_HASH, device.deviceId(), objectMapper.writeValueAsString(device));
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis save failed, using local fallback for device " + device.deviceId() + ": " + exception.getMessage());
         }
         return device;
     }
@@ -45,8 +49,8 @@ public class RedisBackedDeviceRepository implements DeviceRepository {
             if (raw != null) {
                 return Optional.of(objectMapper.readValue(raw.toString(), Device.class));
             }
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis lookup failed, using local fallback for device " + deviceId + ": " + exception.getMessage());
         }
         return Optional.ofNullable(fallbackStorage.get(deviceId));
     }
@@ -62,8 +66,8 @@ public class RedisBackedDeviceRepository implements DeviceRepository {
                 }
                 return devices;
             }
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis list failed, using local fallback: " + exception.getMessage());
         }
         return List.copyOf(fallbackStorage.values());
     }
@@ -73,8 +77,8 @@ public class RedisBackedDeviceRepository implements DeviceRepository {
         fallbackStorage.remove(deviceId);
         try {
             redisTemplate.opsForHash().delete(DEVICE_HASH, deviceId);
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis delete failed, fallback cleanup only for device " + deviceId + ": " + exception.getMessage());
         }
     }
 }

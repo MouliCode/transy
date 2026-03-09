@@ -1,5 +1,7 @@
 package com.transfer.signaling.service;
 
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,9 +19,11 @@ public class SessionService {
     private final ConcurrentHashMap<String, String> sessionToDevice = new ConcurrentHashMap<>();
     private final StringRedisTemplate redisTemplate;
     private final String instanceId = UUID.randomUUID().toString();
+    private final Logger logger;
 
     public SessionService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     public void register(String deviceId, WebSocketSession session) {
@@ -32,12 +36,14 @@ public class SessionService {
             sessionToDevice.put(sessionId, deviceId);
         }
         safeRedisPut(deviceId, instanceId);
+        logger.info("Registered local signaling session for device: " + deviceId);
     }
 
     public void remove(String deviceId) {
         if (deviceId != null) {
             localSessions.remove(deviceId);
             safeRedisDelete(deviceId);
+            logger.info("Removed local signaling session for device: " + deviceId);
         }
     }
 
@@ -64,7 +70,8 @@ public class SessionService {
         try {
             Object value = redisTemplate.opsForHash().get(SESSION_OWNER_HASH, deviceId);
             return value == null ? null : value.toString();
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            logger.warning("Failed to get signaling owner from redis: " + exception.getMessage());
             return null;
         }
     }
@@ -76,16 +83,16 @@ public class SessionService {
     private void safeRedisPut(String deviceId, String owner) {
         try {
             redisTemplate.opsForHash().put(SESSION_OWNER_HASH, deviceId, owner);
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis put failed for signaling owner, using local fallback: " + exception.getMessage());
         }
     }
 
     private void safeRedisDelete(String deviceId) {
         try {
             redisTemplate.opsForHash().delete(SESSION_OWNER_HASH, deviceId);
-        } catch (Exception ignored) {
-            // local fallback mode
+        } catch (Exception exception) {
+            logger.warning("Redis delete failed for signaling owner, using local fallback: " + exception.getMessage());
         }
     }
 }

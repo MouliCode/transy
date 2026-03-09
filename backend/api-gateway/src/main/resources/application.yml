@@ -8,8 +8,6 @@ spring:
 app:
   security:
     ws-api-key: ${WS_API_KEY:dev-ws-key}
-  logging:
-    root-level: ${APP_LOG_ROOT_LEVEL:3}
 
 management:
   endpoints:

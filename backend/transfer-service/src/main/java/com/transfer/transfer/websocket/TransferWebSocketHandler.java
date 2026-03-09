@@ -1,6 +1,8 @@
 package com.transfer.transfer.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transfer.common.logging.core.Logger;
+import com.transfer.common.logging.core.LoggerFactory;
 import com.transfer.transfer.model.TransferMessage;
 import com.transfer.transfer.model.TransferSession;
 import com.transfer.transfer.service.TransferSessionHubService;
@@ -19,16 +21,19 @@ public class TransferWebSocketHandler extends TextWebSocketHandler {
     private final TransferSessionService transferSessionService;
     private final TransferSessionHubService transferSessionHubService;
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final Logger logger;
 
     public TransferWebSocketHandler(TransferSessionService transferSessionService,
                                     TransferSessionHubService transferSessionHubService) {
         this.transferSessionService = transferSessionService;
         this.transferSessionHubService = transferSessionHubService;
+        this.logger = LoggerFactory.createFromClasspathProperties(getClass().getSimpleName());
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         transferSessionHubService.add(session);
+        logger.info("Transfer websocket client connected: " + session.getId());
     }
 
     @Override
@@ -49,6 +54,7 @@ public class TransferWebSocketHandler extends TextWebSocketHandler {
                             input.getFileSizeBytes()
                     );
                     broadcastSession("TRANSFER_CREATED", created);
+                    logger.info("Transfer created: " + created.transferId());
                 }
             }
             case "TRANSFER_PROGRESS" -> {
@@ -64,6 +70,7 @@ public class TransferWebSocketHandler extends TextWebSocketHandler {
                     TransferSession completed = transferSessionService.complete(input.getTransferId());
                     if (completed != null) {
                         broadcastSession("TRANSFER_COMPLETED", completed);
+                        logger.info("Transfer completed: " + completed.transferId());
                     }
                 }
             }
@@ -72,6 +79,7 @@ public class TransferWebSocketHandler extends TextWebSocketHandler {
                     TransferSession failed = transferSessionService.fail(input.getTransferId());
                     if (failed != null) {
                         broadcastSession("TRANSFER_FAILED", failed);
+                        logger.error("Transfer marked failed: " + failed.transferId());
                     }
                 }
             }
@@ -93,6 +101,7 @@ public class TransferWebSocketHandler extends TextWebSocketHandler {
             default -> {
                 TransferMessage out = TransferMessage.ofType("ERROR");
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(out)));
+                logger.warning("Unsupported transfer message type: " + input.getType());
             }
         }
     }
@@ -100,6 +109,7 @@ public class TransferWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         transferSessionHubService.remove(session.getId());
+        logger.info("Transfer websocket client disconnected: " + session.getId());
         super.afterConnectionClosed(session, status);
     }
 

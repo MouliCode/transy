@@ -14,17 +14,28 @@ public class LoggingProperties {
     public static final String DESTINATIONS_KEY = "app.logging.destinations";
     public static final String FILE_PATH_KEY = "app.logging.file.path";
     public static final String DB_TABLE_KEY = "app.logging.db.table";
+    public static final String FILTER_LEVEL_KEY = "app.logging.filter.level";
+    public static final String FORMAT_PATTERN_KEY = "app.logging.format.pattern";
 
     private final LogLevel rootLevel;
     private final List<String> destinations;
     private final String filePath;
     private final String dbTable;
+    private final LogLevel filterLevel;
+    private final String formatPattern;
 
-    private LoggingProperties(LogLevel rootLevel, List<String> destinations, String filePath, String dbTable) {
+    private LoggingProperties(LogLevel rootLevel,
+                              List<String> destinations,
+                              String filePath,
+                              String dbTable,
+                              LogLevel filterLevel,
+                              String formatPattern) {
         this.rootLevel = rootLevel;
         this.destinations = destinations;
         this.filePath = filePath;
         this.dbTable = dbTable;
+        this.filterLevel = filterLevel;
+        this.formatPattern = formatPattern;
     }
 
     public static LoggingProperties fromProperties(Properties properties) {
@@ -47,7 +58,29 @@ public class LoggingProperties {
 
         String filePath = properties.getProperty(FILE_PATH_KEY, "application.log");
         String dbTable = properties.getProperty(DB_TABLE_KEY, "application_logs");
-        return new LoggingProperties(rootLevel, destinations, filePath, dbTable);
+        String filterLevelRaw = properties.getProperty(FILTER_LEVEL_KEY, rootLevelRaw).trim();
+        LogLevel filterLevel = filterLevelRaw.matches("\\d+")
+                ? LogLevel.fromNumeric(Integer.parseInt(filterLevelRaw))
+                : LogLevel.fromText(filterLevelRaw);
+        String formatPattern = properties.getProperty(FORMAT_PATTERN_KEY, "[%LEVEL] %TIMESTAMP [%SOURCE] - %MESSAGE");
+        return new LoggingProperties(rootLevel, destinations, filePath, dbTable, filterLevel, formatPattern);
+    }
+
+    public static LoggingProperties fromValues(String rootLevel, String destinations, String filePath, String dbTable) {
+        Properties properties = new Properties();
+        if (rootLevel != null) {
+            properties.setProperty(ROOT_LEVEL_KEY, rootLevel);
+        }
+        if (destinations != null) {
+            properties.setProperty(DESTINATIONS_KEY, destinations);
+        }
+        if (filePath != null) {
+            properties.setProperty(FILE_PATH_KEY, filePath);
+        }
+        if (dbTable != null) {
+            properties.setProperty(DB_TABLE_KEY, dbTable);
+        }
+        return fromProperties(properties);
     }
 
     public static LoggingProperties fromClasspath(String resourceName) {
@@ -76,5 +109,13 @@ public class LoggingProperties {
 
     public String getDbTable() {
         return dbTable;
+    }
+
+    public LogLevel getFilterLevel() {
+        return filterLevel;
+    }
+
+    public String getFormatPattern() {
+        return formatPattern;
     }
 }
