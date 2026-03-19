@@ -8,6 +8,7 @@ Build a backend for cross-platform file transfer (Android/iOS/Mac/Web) where:
 ## 2. High-Level Architecture
 
 ```mermaid
+
 flowchart LR
   A["Android Browser"] --> G["API Gateway :8080"]
   I["iOS/Mac Browser"] --> G
